@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
 * EIP-2535 Diamonds: https://eips.ethereum.org/EIPS/eip-2535
 /******************************************************************************/
 import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
+import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 
 // Remember to add the loupe functions from DiamondLoupeFacet to the diamond.
 // The loupe functions are required by the EIP2535 Diamonds standard
@@ -25,6 +26,13 @@ library LibDiamond {
         uint256 facetAddressPosition; // position of facetAddress in facetAddresses array
     }
 
+    struct Person {
+        uint id;
+        address wallet;
+        string name;
+        uint8 age;
+    }
+
     struct DiamondStorage {
         // maps function selector to the facet address and
         // the position of the selector in the facetFunctionSelectors.selectors array
@@ -38,6 +46,12 @@ library LibDiamond {
         mapping(bytes4 => bool) supportedInterfaces;
         // owner of the contract
         address contractOwner;
+        // Person count
+        Counters.Counter personCounter;
+        // Persons mapping for Person contract
+        mapping(uint => Person) persons;
+        // Person id to friends mapping
+        mapping(uint => uint[]) friends;
     }
 
     function diamondStorage() internal pure returns (DiamondStorage storage ds) {
